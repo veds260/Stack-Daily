@@ -119,40 +119,47 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
         />
 
         {/* Main content */}
-        <div className="relative z-10 min-h-screen flex flex-col">
-          {/* Center content */}
-          <div className="flex-1 flex flex-col items-center justify-center px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-center max-w-2xl"
-            >
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
+          {/* Glass container with hover effect */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            whileHover={{
+              scale: 1.01,
+              boxShadow: "0 0 60px rgba(239, 68, 68, 0.15)",
+            }}
+            className="relative w-full max-w-lg bg-zinc-950/50 backdrop-blur-xl border border-zinc-800/50 rounded-3xl p-10 md:p-12 transition-all duration-500 hover:border-zinc-700/50 hover:bg-zinc-900/30"
+          >
+            {/* Subtle glow effect on hover */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-red-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+            <div className="relative text-center">
               {/* Large logo */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="mb-12"
+                className="mb-10"
               >
                 <Image
                   src="/stack-daily-logo-white.png"
                   alt="Stack Daily"
                   width={400}
                   height={120}
-                  className="h-24 md:h-32 w-auto mx-auto"
+                  className="h-20 md:h-24 w-auto mx-auto"
                 />
               </motion.div>
 
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-800 mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-800 mb-6">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                 <span className="text-zinc-400 text-sm">Exclusive talent network</span>
               </div>
 
-              <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-4">
+              <h1 className="text-white text-2xl md:text-3xl font-light tracking-tight mb-3">
                 Get First Dibs
               </h1>
-              <p className="text-zinc-500 text-lg font-light mb-10">
+              <p className="text-zinc-500 text-base font-light mb-8">
                 on exclusive opportunities
               </p>
 
@@ -168,12 +175,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 <span className="absolute inset-0 z-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">Get Started</span>
               </motion.button>
 
-              {/* Stats or social proof */}
+              {/* Stats */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-16 flex items-center justify-center gap-8 text-zinc-600"
+                className="mt-10 pt-8 border-t border-zinc-800/50 flex items-center justify-center gap-8 text-zinc-600"
               >
                 <div className="flex items-center gap-2">
                   <span className="text-white font-medium">1000+</span>
@@ -185,15 +192,15 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                   <span className="text-sm">opportunities</span>
                 </div>
               </motion.div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
 
           {/* Footer */}
           <motion.footer
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="p-8 text-center"
+            className="mt-8 text-center"
           >
             <a
               href={TELEGRAM_LINK}
