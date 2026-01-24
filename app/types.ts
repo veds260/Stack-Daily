@@ -32,6 +32,7 @@ export const EXPERTISE_OPTIONS = [
   'Ghostwriting',
   'Graphic Design',
   'Video Editing',
+  'Clipping',
   'Sales',
   'Vibe Coding',
 ] as const;
