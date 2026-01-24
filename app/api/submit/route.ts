@@ -26,10 +26,10 @@ const HEADERS = [
 
 // Maps for readable labels
 const EXPERIENCE_LABELS: Record<string, string> = {
-  'personal': 'Personal projects only',
-  'less-1': 'Less than 1 year',
-  '1-2': '1-2 years',
-  '3+': '3+ years',
+  'beginner': 'Beginner (less than a year)',
+  'intermediate': 'Intermediate (1-2 years)',
+  'advanced': 'Advanced (3-5 years)',
+  'expert': 'Expert (5+ years)',
 };
 
 const RATE_LABELS: Record<string, string> = {

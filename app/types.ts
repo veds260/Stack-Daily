@@ -24,23 +24,21 @@ export interface TitleInfo {
 }
 
 export const EXPERTISE_OPTIONS = [
-  'Social Media Management',
-  'Community Management',
-  'Project Management',
-  'Business Development',
-  'Ghostwriting',
-  'Graphic Design',
-  'Video Editing',
-  'Clipping',
+  'Marketing',
   'Sales',
-  'Vibe Coding',
+  'Operations',
+  'Product',
+  'Design',
+  'Development',
+  'Content',
+  'Community',
 ] as const;
 
 export const EXPERIENCE_OPTIONS = [
-  { value: 'personal', label: 'Worked only on personal projects' },
-  { value: 'less-1', label: '< 1 year' },
-  { value: '1-2', label: '1-2 years' },
-  { value: '3+', label: '3+ years' },
+  { value: 'beginner', label: 'Beginner (less than a year)' },
+  { value: 'intermediate', label: 'Intermediate (1-2 years)' },
+  { value: 'advanced', label: 'Advanced (3-5 years)' },
+  { value: 'expert', label: 'Expert (5+ years)' },
 ] as const;
 
 // Check if a string is a valid URL

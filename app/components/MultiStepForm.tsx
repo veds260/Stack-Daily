@@ -3,14 +3,15 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { FormData, EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS, isValidUrl } from '../types';
+import { FormData, EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '../types';
 
 interface MultiStepFormProps {
   onComplete: (data: FormData) => void;
 }
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 7;
 const TELEGRAM_LINK = 'https://t.me/stackdailyy';
+const INNER_CIRCLE_LINK = 'https://t.me/+YourInnerCircleLink';
 
 export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   const [step, setStep] = useState(0);
@@ -24,7 +25,6 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     biggestWin: '',
     portfolio: '',
   });
-  const [portfolioError, setPortfolioError] = useState('');
   const [direction, setDirection] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +35,6 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
   const updateField = (field: keyof FormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (field === 'portfolio') setPortfolioError('');
   };
 
   const toggleExpertise = (skill: string) => {
@@ -50,21 +49,20 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   const canProceed = () => {
     switch (step) {
       case 0: return true;
-      case 1: return formData.name.trim().length > 0;
+      case 1: return formData.xProfile.trim().length > 0;
       case 2: return formData.telegram.trim().length > 0;
-      case 3: return formData.xProfile.trim().length > 0;
-      case 4: return formData.expertise.length > 0 || otherExpertise.trim().length > 0;
-      case 5: return formData.experienceLevel.length > 0 || (formData.experienceLevel === 'other' && otherExperience.trim().length > 0);
-      case 6: return formData.monthlyRate.length > 0 || (formData.monthlyRate === 'other' && otherMonthlyRate.trim().length > 0);
+      case 3: return formData.expertise.length > 0 || otherExpertise.trim().length > 0;
+      case 4: return formData.experienceLevel.length > 0 || (formData.experienceLevel === 'other' && otherExperience.trim().length > 0);
+      case 5: return formData.monthlyRate.length > 0 || (formData.monthlyRate === 'other' && otherMonthlyRate.trim().length > 0);
+      case 6: return formData.portfolio.trim().length > 0;
       case 7: return formData.biggestWin.trim().length > 0;
-      case 8: return true;
       default: return false;
     }
   };
 
   const handleNext = () => {
     // Auto-fix portfolio URL if entered without protocol
-    if (step === 8 && formData.portfolio.trim() !== '') {
+    if (step === 6 && formData.portfolio.trim() !== '') {
       let url = formData.portfolio.trim();
       if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
@@ -75,9 +73,11 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     if (step < TOTAL_STEPS) {
       setStep(step + 1);
     } else {
-      // Include "other" values in submission
+      // Extract name from X handle for submission
+      const xHandle = formData.xProfile.replace('x.com/', '').replace('@', '');
       const submissionData = {
         ...formData,
+        name: xHandle,
         otherExpertise,
         otherExperience,
         otherMonthlyRate,
@@ -155,14 +155,14 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="mb-10"
+                className="mb-8"
               >
                 <Image
                   src="/stack-daily-logo-white.png"
                   alt="Stack Daily"
-                  width={400}
-                  height={120}
-                  className="h-24 w-auto mx-auto"
+                  width={500}
+                  height={150}
+                  className="h-32 w-auto mx-auto"
                 />
               </motion.div>
 
@@ -171,11 +171,11 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 <span className="text-zinc-400 text-sm">Exclusive talent network</span>
               </div>
 
-              <h1 className="text-white text-2xl md:text-3xl font-light tracking-tight mb-3">
-                Get First Dibs
+              <h1 className="text-white text-2xl md:text-3xl font-medium tracking-tight mb-2">
+                Join the Inner Circle
               </h1>
               <p className="text-zinc-500 text-base font-light mb-8">
-                on exclusive opportunities
+                Get access to premium opportunities
               </p>
 
               <motion.button
@@ -185,9 +185,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 className="group relative px-10 py-4 bg-white text-black rounded-full font-medium overflow-hidden"
               >
-                <span className="relative z-10">Get Started</span>
+                <span className="relative z-10">Apply Now</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="absolute inset-0 z-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">Get Started</span>
+                <span className="absolute inset-0 z-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">Apply Now</span>
               </motion.button>
 
               {/* Stats */}
@@ -203,8 +203,8 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 </div>
                 <div className="w-px h-4 bg-zinc-800" />
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-medium">50+</span>
-                  <span className="text-sm">opportunities</span>
+                  <span className="text-white font-medium">$100k+</span>
+                  <span className="text-sm">in opportunities</span>
                 </div>
               </motion.div>
             </div>
@@ -223,7 +223,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               rel="noopener noreferrer"
               className="text-zinc-600 text-sm hover:text-zinc-400 transition-colors"
             >
-              Not a member? Join us →
+              Join the community first →
             </a>
           </motion.footer>
         </div>
@@ -279,8 +279,8 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
         </div>
       </motion.div>
 
-      {/* Main content - centered */}
-      <div className="relative z-10 flex items-center justify-center px-6" style={{ minHeight: 'calc(100vh - 100px)' }}>
+      {/* Main content - centered with uniform spacing */}
+      <div className="relative z-10 flex items-center justify-center px-6 pt-16">
         <div className="w-full max-w-lg">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -294,16 +294,16 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
             >
               {step === 1 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
-                    What's your name?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12">
+                    What's your X handle?
                   </h1>
                   <input
                     type="text"
-                    value={formData.name}
-                    onChange={e => updateField('name', e.target.value)}
+                    value={formData.xProfile}
+                    onChange={e => updateField('xProfile', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter your name"
-                    className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-2xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
+                    placeholder="@handle"
+                    className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
                 </div>
@@ -311,7 +311,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 2 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12">
                     What's your Telegram?
                   </h1>
                   <div className="flex items-center justify-center border-b border-zinc-800 focus-within:border-zinc-600 transition-colors duration-300">
@@ -330,25 +330,8 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               )}
 
               {step === 3 && (
-                <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
-                    What's your X handle?
-                  </h1>
-                  <input
-                    type="text"
-                    value={formData.xProfile}
-                    onChange={e => updateField('xProfile', e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="x.com/handle"
-                    className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
-                    autoFocus
-                  />
-                </div>
-              )}
-
-              {step === 4 && (
                 <div>
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8 text-center">
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12 text-center">
                     What are your skills?
                   </h1>
                   <div className="grid grid-cols-2 gap-2">
@@ -381,10 +364,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 </div>
               )}
 
-              {step === 5 && (
+              {step === 4 && (
                 <div>
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8 text-center">
-                    How long have you been working?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12 text-center">
+                    What's your experience level?
                   </h1>
                   <div className="space-y-2">
                     {EXPERIENCE_OPTIONS.map(option => (
@@ -431,9 +414,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 </div>
               )}
 
-              {step === 6 && (
+              {step === 5 && (
                 <div>
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8 text-center">
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12 text-center">
                     What's your monthly rate?
                   </h1>
                   <div className="space-y-2">
@@ -481,28 +464,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 </div>
               )}
 
-              {step === 7 && (
-                <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8">
-                    What's your biggest win?
-                  </h1>
-                  <textarea
-                    value={formData.biggestWin}
-                    onChange={e => updateField('biggestWin', e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Your proudest achievement..."
-                    className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-lg px-6 py-5 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700 resize-none h-32 font-light"
-                    autoFocus
-                  />
-                </div>
-              )}
-
-              {step === 8 && (
+              {step === 6 && (
                 <div className="text-center">
                   <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
-                    Do you have a portfolio?
+                    Drop a link to your portfolio
                   </h1>
-                  <p className="text-zinc-600 text-sm mb-10">Optional</p>
+                  <p className="text-zinc-500 text-sm mb-12">Show us what you've built</p>
                   <input
                     type="text"
                     value={formData.portfolio}
@@ -510,6 +477,23 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     onKeyDown={handleKeyDown}
                     placeholder="yoursite.com"
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-200 placeholder:text-zinc-700 text-center font-light"
+                    autoFocus
+                  />
+                </div>
+              )}
+
+              {step === 7 && (
+                <div className="text-center">
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
+                    Share your notable achievements
+                  </h1>
+                  <p className="text-zinc-500 text-sm mb-12">Experiences, wins, or other relevant skills</p>
+                  <textarea
+                    value={formData.biggestWin}
+                    onChange={e => updateField('biggestWin', e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Tell us about your proudest work..."
+                    className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-lg px-6 py-5 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700 resize-none h-32 font-light"
                     autoFocus
                   />
                 </div>
