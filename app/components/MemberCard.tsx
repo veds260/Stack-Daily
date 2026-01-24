@@ -317,7 +317,7 @@ export default function MemberCard({ data, onBack }: MemberCardProps) {
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-zinc-600 text-[11px] uppercase tracking-wider">Stack Daily</p>
-                <p className="text-zinc-700 text-[10px]">Member since 2025</p>
+                <p className="text-zinc-700 text-[10px]">Member since {new Date().getFullYear()}</p>
               </div>
               {qrCode && (
                 <img src={qrCode} alt="QR" className="w-14 h-14 opacity-50" />
