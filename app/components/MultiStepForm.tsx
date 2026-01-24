@@ -58,10 +58,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   };
 
   const handleNext = () => {
+    // Auto-fix portfolio URL if entered without protocol
     if (step === 8 && formData.portfolio.trim() !== '') {
-      if (!isValidUrl(formData.portfolio)) {
-        setPortfolioError('Please enter a valid URL');
-        return;
+      let url = formData.portfolio.trim();
+      if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+        updateField('portfolio', url);
       }
     }
     setDirection(1);
@@ -219,15 +221,16 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
             >
               {step === 1 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
-                    What's your name?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
+                    What should we call you?
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-10">This will appear on your card</p>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={e => updateField('name', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter your name"
+                    placeholder="Your name or alias"
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-2xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
@@ -236,9 +239,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 2 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
-                    Telegram username?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
+                    Your Telegram handle
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-10">So clients can reach you directly</p>
                   <div className="flex items-center justify-center border-b border-zinc-800 focus-within:border-zinc-600 transition-colors duration-300">
                     <span className="text-zinc-600 text-2xl font-light">@</span>
                     <input
@@ -256,15 +260,16 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 3 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-10">
-                    Your X profile link
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
+                    Link your X profile
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-10">We'll pull your profile picture from here</p>
                   <input
-                    type="url"
+                    type="text"
                     value={formData.xProfile}
                     onChange={e => updateField('xProfile', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="https://x.com/handle"
+                    placeholder="x.com/yourhandle"
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
@@ -274,9 +279,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               {step === 4 && (
                 <div>
                   <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3 text-center">
-                    Your expertise
+                    What do you do best?
                   </h1>
-                  <p className="text-zinc-600 text-sm mb-8 text-center">Select all that apply</p>
+                  <p className="text-zinc-600 text-sm mb-8 text-center">Pick your top skills</p>
                   <div className="grid grid-cols-2 gap-2">
                     {EXPERTISE_OPTIONS.map(skill => (
                       <motion.button
@@ -298,9 +303,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 5 && (
                 <div>
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8 text-center">
-                    Years in the space?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3 text-center">
+                    How long have you been building?
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-8 text-center">Working with clients or on your own projects</p>
                   <div className="space-y-2">
                     {EXPERIENCE_OPTIONS.map(option => (
                       <motion.button
@@ -322,9 +328,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 6 && (
                 <div>
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8 text-center">
-                    Monthly rate?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3 text-center">
+                    What's your monthly retainer?
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-8 text-center">Helps clients know your range upfront</p>
                   <div className="space-y-2">
                     {MONTHLY_RATE_OPTIONS.map(option => (
                       <motion.button
@@ -346,9 +353,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
               {step === 7 && (
                 <div className="text-center">
-                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-8">
-                    Your biggest W?
+                  <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
+                    What's your biggest win?
                   </h1>
+                  <p className="text-zinc-600 text-sm mb-8">The achievement you're most proud of</p>
                   <textarea
                     value={formData.biggestWin}
                     onChange={e => updateField('biggestWin', e.target.value)}
@@ -363,21 +371,18 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               {step === 8 && (
                 <div className="text-center">
                   <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-3">
-                    Portfolio link?
+                    Got a portfolio or website?
                   </h1>
-                  <p className="text-zinc-600 text-sm mb-10">Optional</p>
+                  <p className="text-zinc-600 text-sm mb-10">Optional - leave blank to skip</p>
                   <input
-                    type="url"
+                    type="text"
                     value={formData.portfolio}
                     onChange={e => updateField('portfolio', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="https://yourportfolio.com"
-                    className={`w-full bg-transparent border-b ${portfolioError ? 'border-red-500' : 'border-zinc-800 focus:border-zinc-600'} text-white text-xl py-4 outline-none transition-colors duration-200 placeholder:text-zinc-700 text-center font-light`}
+                    placeholder="yoursite.com"
+                    className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-200 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
-                  {portfolioError && (
-                    <p className="text-red-400 text-sm mt-4">{portfolioError}</p>
-                  )}
                 </div>
               )}
             </motion.div>

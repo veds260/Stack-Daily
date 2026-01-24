@@ -26,17 +26,14 @@ export interface TitleInfo {
 
 export const EXPERTISE_OPTIONS = [
   'Social Media Management',
-  'Reply Guy',
-  'BD',
+  'Community Management',
   'Project Management',
-  'Clipping',
-  'Graphic Design',
+  'Business Development',
   'Ghostwriting',
-  'Community Manager',
+  'Graphic Design',
+  'Video Editing',
   'Sales',
   'Vibe Coding',
-  'Vibe Marketing',
-  'Claude Code/Cowork',
 ] as const;
 
 export const EXPERIENCE_OPTIONS = [
