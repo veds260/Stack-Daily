@@ -10,8 +10,8 @@ interface MultiStepFormProps {
 }
 
 const TOTAL_STEPS = 7;
-const TELEGRAM_LINK = 'https://t.me/stackdailyy';
-const INNER_CIRCLE_LINK = 'https://t.me/+YourInnerCircleLink';
+const TELEGRAM_LINK = 'https://t.me/+q3abpE3xjGszMGQ1';
+const INNER_CIRCLE_LINK = 'https://t.me/+q3abpE3xjGszMGQ1';
 
 export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   const [step, setStep] = useState(0);

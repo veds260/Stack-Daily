@@ -6,7 +6,7 @@ import Image from 'next/image';
 import MultiStepForm from './components/MultiStepForm';
 import { FormData } from './types';
 
-const TELEGRAM_LINK = 'https://t.me/stackdailyy';
+const TELEGRAM_LINK = 'https://t.me/+q3abpE3xjGszMGQ1';
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData | null>(null);
