@@ -105,54 +105,107 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   if (step === 0) {
     return (
       <div className="min-h-screen bg-[#030303] relative overflow-hidden">
-        {/* Subtle gradient */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-950/20 rounded-full blur-[150px]" />
+        {/* Ambient background orbs */}
+        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-red-500/5 rounded-full blur-[100px]" />
 
-        {/* Logo at top */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2">
-          <Image
-            src="/stack-daily-logo-white.png"
-            alt="Stack Daily"
-            width={640}
-            height={192}
-            className="h-40 w-auto"
-          />
-        </div>
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
 
-        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+        {/* Main content */}
+        <div className="relative z-10 min-h-screen flex flex-col">
+          {/* Header */}
+          <motion.header
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+            transition={{ duration: 0.5 }}
+            className="p-8 flex justify-center"
           >
-            <h1 className="text-white text-4xl md:text-5xl font-light tracking-tight mb-4">
-              Get First Dibs
-            </h1>
-            <p className="text-zinc-500 text-lg mb-12">
-              on exclusive opportunities
-            </p>
+            <Image
+              src="/stack-daily-logo-white.png"
+              alt="Stack Daily"
+              width={160}
+              height={48}
+              className="h-10 w-auto"
+            />
+          </motion.header>
 
-            <motion.button
-              onClick={() => { setDirection(1); setStep(1); }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-12 py-4 bg-red-500 text-white rounded-full font-medium hover:bg-red-400 transition-colors"
+          {/* Center content */}
+          <div className="flex-1 flex flex-col items-center justify-center px-8 pb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-center max-w-2xl"
             >
-              Get Started
-            </motion.button>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-800 mb-8">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-zinc-400 text-sm">Exclusive talent network</span>
+              </div>
 
-            <p className="mt-12 text-zinc-600 text-sm">
-              <a
-                href={TELEGRAM_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-zinc-400 transition-colors"
+              <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6">
+                Get First Dibs
+              </h1>
+              <p className="text-zinc-500 text-xl md:text-2xl font-light mb-12 max-w-md mx-auto">
+                on exclusive opportunities
+              </p>
+
+              <motion.button
+                onClick={() => { setDirection(1); setStep(1); }}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                className="group relative px-10 py-4 bg-white text-black rounded-full font-medium text-lg overflow-hidden"
               >
-                Not a member? Join us →
-              </a>
-            </p>
-          </motion.div>
+                <span className="relative z-10">Get Started</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="absolute inset-0 z-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">Get Started</span>
+              </motion.button>
+            </motion.div>
+
+            {/* Floating tags */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mt-16 flex flex-wrap justify-center gap-3 max-w-xl"
+            >
+              {['Ghostwriting', 'Social Media', 'Design', 'Video', 'Sales', 'Community'].map((tag, i) => (
+                <motion.span
+                  key={tag}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
+                  className="px-4 py-2 rounded-full border border-zinc-800 text-zinc-600 text-sm hover:border-zinc-700 hover:text-zinc-500 transition-colors cursor-default"
+                >
+                  {tag}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Footer */}
+          <motion.footer
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="p-8 text-center"
+          >
+            <a
+              href={TELEGRAM_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-600 text-sm hover:text-zinc-400 transition-colors"
+            >
+              Not a member? Join us →
+            </a>
+          </motion.footer>
         </div>
       </div>
     );
