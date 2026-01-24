@@ -26,6 +26,7 @@ export default function MemberCard({ data, onBack }: MemberCardProps) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [glowPosition, setGlowPosition] = useState({ x: 50, y: 50 });
+  const [profilePicBase64, setProfilePicBase64] = useState<string>('');
 
   const titleInfo = calculateTitle(data.experienceLevel, data.biggestWin);
 
@@ -38,6 +39,25 @@ export default function MemberCard({ data, onBack }: MemberCardProps) {
     .split('?')[0];
 
   const profilePicUrl = `/api/avatar?username=${xUsername}`;
+
+  // Pre-load profile picture as base64 for reliable download
+  useEffect(() => {
+    const loadProfilePic = async () => {
+      try {
+        const response = await fetch(profilePicUrl);
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfilePicBase64(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+      } catch {
+        // Use fallback
+        setProfilePicBase64(`https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=18181b&color=fff&size=128`);
+      }
+    };
+    loadProfilePic();
+  }, [profilePicUrl, data.name]);
   const hasValidPortfolio = data.portfolio.trim() !== '' && isValidUrl(data.portfolio);
   const cardLink = hasValidPortfolio
     ? data.portfolio
@@ -240,7 +260,7 @@ export default function MemberCard({ data, onBack }: MemberCardProps) {
             {/* Profile */}
             <div className="flex items-center gap-5 mb-6">
               <img
-                src={profilePicUrl}
+                src={profilePicBase64 || profilePicUrl}
                 alt={data.name}
                 className="w-20 h-20 rounded-full object-cover border border-zinc-800"
                 onError={(e) => {
