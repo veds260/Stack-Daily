@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { db } from '@/lib/db';
+import { submissions } from '@/lib/db/schema';
 
 const HEADERS = [
   'Timestamp',
@@ -49,39 +51,85 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
   }
 }
 
+async function saveToDatabase(data: {
+  name: string;
+  telegram: string;
+  xProfile: string;
+  expertise: string[];
+  experienceLevel: string;
+  monthlyRate: string;
+  biggestWin: string;
+  portfolio: string;
+}) {
+  if (!db) return;
+
+  try {
+    await db.insert(submissions).values({
+      name: data.name,
+      telegram: data.telegram,
+      xProfile: data.xProfile,
+      expertise: data.expertise.join(', '),
+      experienceLevel: data.experienceLevel,
+      monthlyRate: data.monthlyRate || null,
+      biggestWin: data.biggestWin,
+      portfolio: data.portfolio || null,
+    });
+  } catch (error) {
+    console.error('Database save error:', error);
+  }
+}
+
+async function saveToGoogleSheets(data: {
+  name: string;
+  telegram: string;
+  xProfile: string;
+  expertise: string[];
+  experienceLevel: string;
+  monthlyRate: string;
+  biggestWin: string;
+  portfolio: string;
+}) {
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+  const auth = await getAuthClient();
+
+  if (!auth || !spreadsheetId) return;
+
+  try {
+    const sheets = google.sheets({ version: 'v4', auth });
+    await ensureHeaders(sheets, spreadsheetId);
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'Sheet1!A:I',
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [[
+          new Date().toISOString(),
+          data.name,
+          data.telegram,
+          data.xProfile,
+          data.expertise.join(', '),
+          data.experienceLevel,
+          data.monthlyRate || 'N/A',
+          data.biggestWin,
+          data.portfolio || 'N/A',
+        ]],
+      },
+    });
+  } catch (error) {
+    console.error('Google Sheets save error:', error);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 
-    const auth = await getAuthClient();
-
-    if (auth && spreadsheetId) {
-      const sheets = google.sheets({ version: 'v4', auth });
-
-      await ensureHeaders(sheets, spreadsheetId);
-
-      await sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range: 'Sheet1!A:I',
-        valueInputOption: 'RAW',
-        requestBody: {
-          values: [[
-            new Date().toISOString(),
-            data.name,
-            data.telegram,
-            data.xProfile,
-            data.expertise.join(', '),
-            data.experienceLevel,
-            data.monthlyRate || 'N/A',
-            data.biggestWin,
-            data.portfolio || 'N/A',
-          ]],
-        },
-      });
-    } else {
-      console.log('Form submission (Google Sheets not configured):', data);
-    }
+    // Save to both - database is the backup
+    await Promise.all([
+      saveToDatabase(data),
+      saveToGoogleSheets(data),
+    ]);
 
     return NextResponse.json({ success: true });
   } catch (error) {
