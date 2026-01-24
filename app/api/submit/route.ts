@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 import { google } from 'googleapis';
 import { db } from '@/lib/db';
 import { submissions } from '@/lib/db/schema';
+import {
+  sanitizeDisplayString,
+  sanitizeUsername,
+  sanitizeUrl,
+  validateArrayValues,
+  validateAllowedValue,
+  checkRateLimit,
+} from '@/lib/security';
+import { EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '@/app/types';
 
 const HEADERS = [
   'Timestamp',
@@ -14,6 +24,63 @@ const HEADERS = [
   'Biggest Win',
   'Portfolio'
 ];
+
+// Extract allowed values from options
+const ALLOWED_EXPERTISE = EXPERTISE_OPTIONS.map(opt => opt);
+const ALLOWED_EXPERIENCE = EXPERIENCE_OPTIONS.map(opt => opt.value);
+const ALLOWED_MONTHLY_RATE = MONTHLY_RATE_OPTIONS.map(opt => opt.value);
+
+interface ValidatedData {
+  name: string;
+  telegram: string;
+  xProfile: string;
+  expertise: string[];
+  experienceLevel: string;
+  monthlyRate: string;
+  biggestWin: string;
+  portfolio: string;
+}
+
+function validateAndSanitizeInput(data: unknown): ValidatedData | null {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  const input = data as Record<string, unknown>;
+
+  // Required fields validation
+  const name = sanitizeDisplayString(input.name, 100);
+  const telegram = sanitizeUsername(input.telegram, 50);
+  const xProfile = sanitizeDisplayString(input.xProfile, 200);
+  const biggestWin = sanitizeDisplayString(input.biggestWin, 1000);
+
+  if (!name || !telegram || !xProfile || !biggestWin) {
+    return null;
+  }
+
+  // Validate against allowed values
+  const expertise = validateArrayValues(input.expertise, ALLOWED_EXPERTISE);
+  const experienceLevel = validateAllowedValue(input.experienceLevel, ALLOWED_EXPERIENCE);
+
+  if (expertise.length === 0 || !experienceLevel) {
+    return null;
+  }
+
+  // Optional fields
+  const monthlyRate = validateAllowedValue(input.monthlyRate, ALLOWED_MONTHLY_RATE);
+  const portfolio = sanitizeUrl(input.portfolio);
+
+  return {
+    name,
+    telegram,
+    xProfile,
+    expertise,
+    experienceLevel,
+    monthlyRate,
+    biggestWin,
+    portfolio,
+  };
+}
 
 async function getAuthClient() {
   const credentials = process.env.GOOGLE_SERVICE_ACCOUNT;
@@ -51,16 +118,7 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
   }
 }
 
-async function saveToDatabase(data: {
-  name: string;
-  telegram: string;
-  xProfile: string;
-  expertise: string[];
-  experienceLevel: string;
-  monthlyRate: string;
-  biggestWin: string;
-  portfolio: string;
-}) {
+async function saveToDatabase(data: ValidatedData) {
   if (!db) return;
 
   try {
@@ -79,16 +137,7 @@ async function saveToDatabase(data: {
   }
 }
 
-async function saveToGoogleSheets(data: {
-  name: string;
-  telegram: string;
-  xProfile: string;
-  expertise: string[];
-  experienceLevel: string;
-  monthlyRate: string;
-  biggestWin: string;
-  portfolio: string;
-}) {
+async function saveToGoogleSheets(data: ValidatedData) {
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
   const auth = await getAuthClient();
 
@@ -123,7 +172,38 @@ async function saveToGoogleSheets(data: {
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
+    // Rate limiting
+    const headersList = await headers();
+    const ip = headersList.get('x-forwarded-for')?.split(',')[0] ||
+               headersList.get('x-real-ip') ||
+               'unknown';
+
+    if (!checkRateLimit(ip, 5, 60000)) {
+      return NextResponse.json(
+        { success: false, error: 'Too many requests. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
+    // Parse and validate input
+    let rawData: unknown;
+    try {
+      rawData = await request.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
+    const data = validateAndSanitizeInput(rawData);
+
+    if (!data) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid or missing required fields' },
+        { status: 400 }
+      );
+    }
 
     // Save to both - database is the backup
     await Promise.all([
@@ -134,6 +214,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Submission error:', error);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
