@@ -59,7 +59,7 @@ export default function Home() {
               alt="Stack Daily"
               width={400}
               height={120}
-              className="h-16 w-auto mx-auto mb-12"
+              className="h-24 w-auto mx-auto mb-12"
             />
 
             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">

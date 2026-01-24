@@ -147,7 +147,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                   alt="Stack Daily"
                   width={400}
                   height={120}
-                  className="h-20 md:h-24 w-auto mx-auto"
+                  className="h-24 w-auto mx-auto"
                 />
               </motion.div>
 
