@@ -37,7 +37,7 @@ export default function MemberCard({ data, onBack }: MemberCardProps) {
     .split('/')[0]
     .split('?')[0];
 
-  const profilePicUrl = `https://unavatar.io/twitter/${xUsername}`;
+  const profilePicUrl = `/api/avatar?username=${xUsername}`;
   const hasValidPortfolio = data.portfolio.trim() !== '' && isValidUrl(data.portfolio);
   const cardLink = hasValidPortfolio
     ? data.portfolio
