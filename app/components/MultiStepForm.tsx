@@ -139,7 +139,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               whileTap={{ scale: 0.98 }}
               className="px-12 py-4 bg-red-500 text-white rounded-full font-medium hover:bg-red-400 transition-colors"
             >
-              Create Your Card
+              Get Started
             </motion.button>
 
             <p className="mt-12 text-zinc-600 text-sm">
