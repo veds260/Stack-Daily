@@ -399,11 +399,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
             <motion.button
               onClick={handleNext}
               disabled={!canProceed()}
-              whileHover={canProceed() ? { scale: 1.02 } : {}}
+              whileHover={canProceed() ? { scale: 1.05, y: -2 } : {}}
               whileTap={canProceed() ? { scale: 0.98 } : {}}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className={`relative px-10 py-4 rounded-full font-medium transition-all duration-300 overflow-hidden border ${
                 canProceed()
-                  ? 'border-zinc-700 text-zinc-400 hover:border-red-500 hover:text-white hover:bg-red-500'
+                  ? 'border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white hover:shadow-lg hover:shadow-zinc-900/50'
                   : 'border-zinc-800 text-zinc-700 cursor-not-allowed'
               }`}
             >
