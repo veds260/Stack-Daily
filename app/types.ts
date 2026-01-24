@@ -14,7 +14,6 @@ export const MONTHLY_RATE_OPTIONS = [
   { value: '500-1000', label: '$500 - $1,000' },
   { value: '1000-2000', label: '$1,000 - $2,000' },
   { value: '2000-2500', label: '$2,000 - $2,500' },
-  { value: '2500-plus', label: '$2,500+' },
 ] as const;
 
 export type Title = 'Apprentice' | 'Builder' | 'Operator' | 'OG' | 'Legend';

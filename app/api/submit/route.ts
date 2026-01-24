@@ -7,37 +7,48 @@ import {
   sanitizeDisplayString,
   sanitizeUsername,
   sanitizeUrl,
-  validateArrayValues,
-  validateAllowedValue,
   checkRateLimit,
 } from '@/lib/security';
 import { encrypt } from '@/lib/encryption';
-import { EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '@/app/types';
+import { EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '@/app/types';
 
 const HEADERS = [
-  'Timestamp',
+  'Date',
   'Name',
   'Telegram',
   'X Profile',
-  'Expertise',
-  'Experience Level',
+  'Skills',
+  'Experience',
   'Monthly Rate',
   'Biggest Win',
   'Portfolio'
 ];
 
-// Extract allowed values from options
-const ALLOWED_EXPERTISE = EXPERTISE_OPTIONS.map(opt => opt);
-const ALLOWED_EXPERIENCE = EXPERIENCE_OPTIONS.map(opt => opt.value);
-const ALLOWED_MONTHLY_RATE = MONTHLY_RATE_OPTIONS.map(opt => opt.value);
+// Maps for readable labels
+const EXPERIENCE_LABELS: Record<string, string> = {
+  'personal': 'Personal projects only',
+  'less-1': 'Less than 1 year',
+  '1-2': '1-2 years',
+  '3+': '3+ years',
+};
+
+const RATE_LABELS: Record<string, string> = {
+  'under-500': 'Under $500',
+  '500-1000': '$500 - $1,000',
+  '1000-2000': '$1,000 - $2,000',
+  '2000-2500': '$2,000 - $2,500',
+};
 
 interface ValidatedData {
   name: string;
   telegram: string;
   xProfile: string;
   expertise: string[];
+  otherExpertise: string;
   experienceLevel: string;
+  otherExperience: string;
   monthlyRate: string;
+  otherMonthlyRate: string;
   biggestWin: string;
   portfolio: string;
 }
@@ -59,16 +70,34 @@ function validateAndSanitizeInput(data: unknown): ValidatedData | null {
     return null;
   }
 
-  // Validate against allowed values
-  const expertise = validateArrayValues(input.expertise, ALLOWED_EXPERTISE);
-  const experienceLevel = validateAllowedValue(input.experienceLevel, ALLOWED_EXPERIENCE);
+  // Expertise - array of skills + optional other
+  let expertise: string[] = [];
+  if (Array.isArray(input.expertise)) {
+    expertise = input.expertise
+      .filter((s): s is string => typeof s === 'string')
+      .map(s => sanitizeDisplayString(s, 100))
+      .filter((s): s is string => s !== null);
+  }
+  const otherExpertise = sanitizeDisplayString(input.otherExpertise, 200) || '';
 
-  if (expertise.length === 0 || !experienceLevel) {
+  // Need at least one skill (from list or other)
+  if (expertise.length === 0 && !otherExpertise) {
     return null;
   }
 
-  // Optional fields
-  const monthlyRate = validateAllowedValue(input.monthlyRate, ALLOWED_MONTHLY_RATE);
+  // Experience level
+  const experienceLevel = sanitizeDisplayString(input.experienceLevel, 50) || '';
+  const otherExperience = sanitizeDisplayString(input.otherExperience, 200) || '';
+
+  if (!experienceLevel) {
+    return null;
+  }
+
+  // Monthly rate
+  const monthlyRate = sanitizeDisplayString(input.monthlyRate, 50) || '';
+  const otherMonthlyRate = sanitizeDisplayString(input.otherMonthlyRate, 200) || '';
+
+  // Portfolio (optional)
   const portfolio = sanitizeUrl(input.portfolio);
 
   return {
@@ -76,11 +105,46 @@ function validateAndSanitizeInput(data: unknown): ValidatedData | null {
     telegram,
     xProfile,
     expertise,
+    otherExpertise,
     experienceLevel,
+    otherExperience,
     monthlyRate,
+    otherMonthlyRate,
     biggestWin,
     portfolio,
   };
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function getExperienceLabel(value: string, other: string): string {
+  if (value === 'other' && other) {
+    return other;
+  }
+  return EXPERIENCE_LABELS[value] || value;
+}
+
+function getRateLabel(value: string, other: string): string {
+  if (value === 'other' && other) {
+    return other;
+  }
+  return RATE_LABELS[value] || value || 'Not specified';
+}
+
+function getSkillsList(skills: string[], other: string): string {
+  const allSkills = [...skills];
+  if (other) {
+    allSkills.push(other);
+  }
+  return allSkills.join(', ');
 }
 
 async function getAuthClient() {
@@ -123,16 +187,15 @@ async function saveToDatabase(data: ValidatedData) {
   if (!db) return;
 
   try {
-    // Encrypt sensitive fields before storing
     await db.insert(submissions).values({
       name: data.name,
-      telegram: encrypt(data.telegram), // Encrypted
-      xProfile: encrypt(data.xProfile), // Encrypted
-      expertise: data.expertise.join(', '),
-      experienceLevel: data.experienceLevel,
-      monthlyRate: data.monthlyRate || null,
+      telegram: encrypt(data.telegram),
+      xProfile: encrypt(data.xProfile),
+      expertise: getSkillsList(data.expertise, data.otherExpertise),
+      experienceLevel: getExperienceLabel(data.experienceLevel, data.otherExperience),
+      monthlyRate: getRateLabel(data.monthlyRate, data.otherMonthlyRate),
       biggestWin: data.biggestWin,
-      portfolio: data.portfolio ? encrypt(data.portfolio) : null, // Encrypted if present
+      portfolio: data.portfolio ? encrypt(data.portfolio) : null,
     });
   } catch (error) {
     console.error('Database save error:', error);
@@ -155,15 +218,15 @@ async function saveToGoogleSheets(data: ValidatedData) {
       valueInputOption: 'RAW',
       requestBody: {
         values: [[
-          new Date().toISOString(),
+          formatDate(new Date()),
           data.name,
-          data.telegram,
+          `@${data.telegram}`,
           data.xProfile,
-          data.expertise.join(', '),
-          data.experienceLevel,
-          data.monthlyRate || 'N/A',
+          getSkillsList(data.expertise, data.otherExpertise),
+          getExperienceLabel(data.experienceLevel, data.otherExperience),
+          getRateLabel(data.monthlyRate, data.otherMonthlyRate),
           data.biggestWin,
-          data.portfolio || 'N/A',
+          data.portfolio || 'None',
         ]],
       },
     });

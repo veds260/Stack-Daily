@@ -28,6 +28,11 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
   const [direction, setDirection] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // "Other" option states
+  const [otherExpertise, setOtherExpertise] = useState('');
+  const [otherExperience, setOtherExperience] = useState('');
+  const [otherMonthlyRate, setOtherMonthlyRate] = useState('');
+
   const updateField = (field: keyof FormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (field === 'portfolio') setPortfolioError('');
@@ -48,9 +53,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
       case 1: return formData.name.trim().length > 0;
       case 2: return formData.telegram.trim().length > 0;
       case 3: return formData.xProfile.trim().length > 0;
-      case 4: return formData.expertise.length > 0;
-      case 5: return formData.experienceLevel.length > 0;
-      case 6: return formData.monthlyRate.length > 0;
+      case 4: return formData.expertise.length > 0 || otherExpertise.trim().length > 0;
+      case 5: return formData.experienceLevel.length > 0 || (formData.experienceLevel === 'other' && otherExperience.trim().length > 0);
+      case 6: return formData.monthlyRate.length > 0 || (formData.monthlyRate === 'other' && otherMonthlyRate.trim().length > 0);
       case 7: return formData.biggestWin.trim().length > 0;
       case 8: return true;
       default: return false;
@@ -67,8 +72,18 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
       }
     }
     setDirection(1);
-    if (step < TOTAL_STEPS) setStep(step + 1);
-    else onComplete(formData);
+    if (step < TOTAL_STEPS) {
+      setStep(step + 1);
+    } else {
+      // Include "other" values in submission
+      const submissionData = {
+        ...formData,
+        otherExpertise,
+        otherExperience,
+        otherMonthlyRate,
+      };
+      onComplete(submissionData as any);
+    }
   };
 
   const handleBack = () => {
@@ -352,6 +367,17 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                       </motion.button>
                     ))}
                   </div>
+                  {/* Other option */}
+                  <div className="mt-4">
+                    <input
+                      type="text"
+                      value={otherExpertise}
+                      onChange={e => setOtherExpertise(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Other skill..."
+                      className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-sm px-4 py-4 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700"
+                    />
+                  </div>
                 </div>
               )}
 
@@ -364,7 +390,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     {EXPERIENCE_OPTIONS.map(option => (
                       <motion.button
                         key={option.value}
-                        onClick={() => updateField('experienceLevel', option.value)}
+                        onClick={() => {
+                          updateField('experienceLevel', option.value);
+                          setOtherExperience('');
+                        }}
                         whileTap={{ scale: 0.98 }}
                         className={`w-full p-5 rounded-xl text-left transition-all duration-200 ${
                           formData.experienceLevel === option.value
@@ -375,6 +404,29 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                         {option.label}
                       </motion.button>
                     ))}
+                    {/* Other option */}
+                    <motion.button
+                      onClick={() => updateField('experienceLevel', 'other')}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full p-5 rounded-xl text-left transition-all duration-200 ${
+                        formData.experienceLevel === 'other'
+                          ? 'bg-zinc-800 text-white border border-zinc-700'
+                          : 'bg-zinc-900/50 border border-zinc-800/50 text-zinc-500 hover:text-zinc-400 hover:border-zinc-700'
+                      }`}
+                    >
+                      Other
+                    </motion.button>
+                    {formData.experienceLevel === 'other' && (
+                      <input
+                        type="text"
+                        value={otherExperience}
+                        onChange={e => setOtherExperience(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Please specify..."
+                        className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-sm px-4 py-4 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700 mt-2"
+                        autoFocus
+                      />
+                    )}
                   </div>
                 </div>
               )}
@@ -388,7 +440,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     {MONTHLY_RATE_OPTIONS.map(option => (
                       <motion.button
                         key={option.value}
-                        onClick={() => updateField('monthlyRate', option.value)}
+                        onClick={() => {
+                          updateField('monthlyRate', option.value);
+                          setOtherMonthlyRate('');
+                        }}
                         whileTap={{ scale: 0.98 }}
                         className={`w-full p-5 rounded-xl text-left transition-all duration-200 ${
                           formData.monthlyRate === option.value
@@ -399,6 +454,29 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                         {option.label}
                       </motion.button>
                     ))}
+                    {/* Other option */}
+                    <motion.button
+                      onClick={() => updateField('monthlyRate', 'other')}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full p-5 rounded-xl text-left transition-all duration-200 ${
+                        formData.monthlyRate === 'other'
+                          ? 'bg-zinc-800 text-white border border-zinc-700'
+                          : 'bg-zinc-900/50 border border-zinc-800/50 text-zinc-500 hover:text-zinc-400 hover:border-zinc-700'
+                      }`}
+                    >
+                      Other
+                    </motion.button>
+                    {formData.monthlyRate === 'other' && (
+                      <input
+                        type="text"
+                        value={otherMonthlyRate}
+                        onChange={e => setOtherMonthlyRate(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Enter your rate..."
+                        className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-sm px-4 py-4 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700 mt-2"
+                        autoFocus
+                      />
+                    )}
                   </div>
                 </div>
               )}
