@@ -11,6 +11,7 @@ import {
   validateAllowedValue,
   checkRateLimit,
 } from '@/lib/security';
+import { encrypt } from '@/lib/encryption';
 import { EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '@/app/types';
 
 const HEADERS = [
@@ -122,15 +123,16 @@ async function saveToDatabase(data: ValidatedData) {
   if (!db) return;
 
   try {
+    // Encrypt sensitive fields before storing
     await db.insert(submissions).values({
       name: data.name,
-      telegram: data.telegram,
-      xProfile: data.xProfile,
+      telegram: encrypt(data.telegram), // Encrypted
+      xProfile: encrypt(data.xProfile), // Encrypted
       expertise: data.expertise.join(', '),
       experienceLevel: data.experienceLevel,
       monthlyRate: data.monthlyRate || null,
       biggestWin: data.biggestWin,
-      portfolio: data.portfolio || null,
+      portfolio: data.portfolio ? encrypt(data.portfolio) : null, // Encrypted if present
     });
   } catch (error) {
     console.error('Database save error:', error);
