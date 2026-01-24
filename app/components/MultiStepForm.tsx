@@ -176,7 +176,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 className="mt-16 flex items-center justify-center gap-8 text-zinc-600"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-medium">100+</span>
+                  <span className="text-white font-medium">1000+</span>
                   <span className="text-sm">members</span>
                 </div>
                 <div className="w-px h-4 bg-zinc-800" />
@@ -460,7 +460,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               }`}
             >
               <span className="relative">
-                {step === TOTAL_STEPS ? 'Generate Card' : 'Continue'}
+                {step === TOTAL_STEPS ? 'Submit' : 'Continue'}
               </span>
             </motion.button>
           </motion.div>

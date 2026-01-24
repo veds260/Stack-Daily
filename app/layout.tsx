@@ -8,17 +8,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Stack Daily Member Card",
-  description: "Create your Stack Daily member card and flex your crypto skills",
+  title: "Stack Daily",
+  description: "Join the Stack Daily talent network",
   openGraph: {
-    title: "Stack Daily Member Card",
-    description: "Create your Stack Daily member card and flex your crypto skills",
+    title: "Stack Daily",
+    description: "Join the Stack Daily talent network",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Stack Daily Member Card",
-    description: "Create your Stack Daily member card and flex your crypto skills",
+    title: "Stack Daily",
+    description: "Join the Stack Daily talent network",
   },
 };
 
