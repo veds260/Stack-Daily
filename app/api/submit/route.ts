@@ -1,37 +1,86 @@
 import { NextResponse } from 'next/server';
+import { google } from 'googleapis';
 
-// Google Sheets API endpoint (using Google Apps Script Web App)
-// You'll need to create a Google Apps Script and deploy it as a web app
-const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
+const HEADERS = [
+  'Timestamp',
+  'Name',
+  'Telegram',
+  'X Profile',
+  'Expertise',
+  'Experience Level',
+  'Monthly Rate',
+  'Biggest Win',
+  'Portfolio'
+];
+
+async function getAuthClient() {
+  const credentials = process.env.GOOGLE_SERVICE_ACCOUNT;
+  if (!credentials) return null;
+
+  try {
+    const parsed = JSON.parse(Buffer.from(credentials, 'base64').toString());
+    const auth = new google.auth.GoogleAuth({
+      credentials: parsed,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+    return auth;
+  } catch {
+    console.error('Failed to parse Google credentials');
+    return null;
+  }
+}
+
+async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string) {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Sheet1!A1:I1',
+  });
+
+  const firstRow = response.data.values?.[0];
+  if (!firstRow || firstRow.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: 'Sheet1!A1:I1',
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [HEADERS],
+      },
+    });
+  }
+}
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 
-    // If Google Script URL is configured, send data there
-    if (GOOGLE_SCRIPT_URL) {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          timestamp: new Date().toISOString(),
-          name: data.name,
-          telegram: data.telegram,
-          xProfile: data.xProfile,
-          expertise: data.expertise.join(', '),
-          experienceLevel: data.experienceLevel,
-          monthlyRate: data.monthlyRate || 'N/A',
-          biggestWin: data.biggestWin,
-          portfolio: data.portfolio || 'N/A',
-        }),
+    const auth = await getAuthClient();
+
+    if (auth && spreadsheetId) {
+      const sheets = google.sheets({ version: 'v4', auth });
+
+      await ensureHeaders(sheets, spreadsheetId);
+
+      await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: 'Sheet1!A:I',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: [[
+            new Date().toISOString(),
+            data.name,
+            data.telegram,
+            data.xProfile,
+            data.expertise.join(', '),
+            data.experienceLevel,
+            data.monthlyRate || 'N/A',
+            data.biggestWin,
+            data.portfolio || 'N/A',
+          ]],
+        },
       });
-
-      if (!response.ok) {
-        console.error('Failed to submit to Google Sheets');
-      }
     } else {
-      // Log to console for testing
-      console.log('Form submission (no Google Sheets configured):', data);
+      console.log('Form submission (Google Sheets not configured):', data);
     }
 
     return NextResponse.json({ success: true });
