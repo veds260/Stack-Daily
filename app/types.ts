@@ -37,8 +37,7 @@ export const EXPERTISE_OPTIONS = [
 export const EXPERIENCE_OPTIONS = [
   { value: 'beginner', label: 'Beginner (less than a year)' },
   { value: 'intermediate', label: 'Intermediate (1-2 years)' },
-  { value: 'advanced', label: 'Advanced (3-5 years)' },
-  { value: 'expert', label: 'Expert (5+ years)' },
+  { value: 'advanced', label: 'Advanced (3+ years)' },
 ] as const;
 
 // Check if a string is a valid URL
