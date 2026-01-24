@@ -166,16 +166,11 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 />
               </motion.div>
 
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-800 mb-6">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-zinc-400 text-sm">Exclusive talent network</span>
-              </div>
-
-              <h1 className="text-white text-2xl md:text-3xl font-medium tracking-tight mb-2">
-                Join the Inner Circle
+              <h1 className="text-white text-3xl md:text-4xl font-semibold tracking-tight mb-3">
+                Top Talent. Top Gigs.
               </h1>
-              <p className="text-zinc-500 text-base font-light mb-8">
-                Get access to premium opportunities
+              <p className="text-zinc-400 text-lg font-light mb-8">
+                Skip the noise. Get matched.
               </p>
 
               <motion.button
@@ -218,12 +213,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
             className="mt-8 text-center"
           >
             <a
-              href={TELEGRAM_LINK}
+              href={INNER_CIRCLE_LINK}
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-600 text-sm hover:text-zinc-400 transition-colors"
             >
-              Join the community first →
+              Join the inner circle →
             </a>
           </motion.footer>
         </div>
