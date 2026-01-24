@@ -30,8 +30,8 @@ export const EXPERTISE_OPTIONS = [
   'Product',
   'Design',
   'Development',
-  'Content',
-  'Community',
+  'Finance',
+  'Strategy',
 ] as const;
 
 export const EXPERIENCE_OPTIONS = [
