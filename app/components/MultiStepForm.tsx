@@ -167,10 +167,10 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               </motion.div>
 
               <h1 className="text-white text-3xl md:text-4xl font-semibold tracking-tight mb-3">
-                Top Talent. Top Gigs.
+                The Inner Circle
               </h1>
               <p className="text-zinc-400 text-lg font-light mb-8">
-                Skip the noise. Get matched.
+                Premium gigs for serious talent
               </p>
 
               <motion.button
