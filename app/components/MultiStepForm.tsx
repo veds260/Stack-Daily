@@ -120,39 +120,39 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
 
         {/* Main content */}
         <div className="relative z-10 min-h-screen flex flex-col">
-          {/* Header */}
-          <motion.header
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-8 flex justify-center"
-          >
-            <Image
-              src="/stack-daily-logo-white.png"
-              alt="Stack Daily"
-              width={160}
-              height={48}
-              className="h-10 w-auto"
-            />
-          </motion.header>
-
           {/* Center content */}
-          <div className="flex-1 flex flex-col items-center justify-center px-8 pb-20">
+          <div className="flex-1 flex flex-col items-center justify-center px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-center max-w-2xl"
             >
+              {/* Large logo */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="mb-12"
+              >
+                <Image
+                  src="/stack-daily-logo-white.png"
+                  alt="Stack Daily"
+                  width={400}
+                  height={120}
+                  className="h-24 md:h-32 w-auto mx-auto"
+                />
+              </motion.div>
+
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-zinc-800 mb-8">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                 <span className="text-zinc-400 text-sm">Exclusive talent network</span>
               </div>
 
-              <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6">
+              <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-4">
                 Get First Dibs
               </h1>
-              <p className="text-zinc-500 text-xl md:text-2xl font-light mb-12 max-w-md mx-auto">
+              <p className="text-zinc-500 text-lg font-light mb-10">
                 on exclusive opportunities
               </p>
 
@@ -161,32 +161,30 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="group relative px-10 py-4 bg-white text-black rounded-full font-medium text-lg overflow-hidden"
+                className="group relative px-10 py-4 bg-white text-black rounded-full font-medium overflow-hidden"
               >
                 <span className="relative z-10">Get Started</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <span className="absolute inset-0 z-10 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">Get Started</span>
               </motion.button>
-            </motion.div>
 
-            {/* Floating tags */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-16 flex flex-wrap justify-center gap-3 max-w-xl"
-            >
-              {['Ghostwriting', 'Social Media', 'Design', 'Video', 'Sales', 'Community'].map((tag, i) => (
-                <motion.span
-                  key={tag}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
-                  className="px-4 py-2 rounded-full border border-zinc-800 text-zinc-600 text-sm hover:border-zinc-700 hover:text-zinc-500 transition-colors cursor-default"
-                >
-                  {tag}
-                </motion.span>
-              ))}
+              {/* Stats or social proof */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="mt-16 flex items-center justify-center gap-8 text-zinc-600"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-medium">100+</span>
+                  <span className="text-sm">members</span>
+                </div>
+                <div className="w-px h-4 bg-zinc-800" />
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-medium">50+</span>
+                  <span className="text-sm">opportunities</span>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
 
