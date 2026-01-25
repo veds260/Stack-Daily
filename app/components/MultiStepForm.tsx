@@ -378,16 +378,13 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                         {skill}
                       </motion.button>
                     ))}
-                  </div>
-                  {/* Other option */}
-                  <div className="mt-4">
                     <input
                       type="text"
                       value={otherExpertise}
                       onChange={e => setOtherExpertise(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="Other skill..."
-                      className="w-full bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white text-sm px-4 py-4 rounded-xl outline-none transition-colors duration-200 placeholder:text-zinc-700"
+                      placeholder="Other..."
+                      className="p-4 rounded-xl text-left text-sm bg-zinc-900/50 border border-zinc-800/50 focus:border-zinc-700 text-white outline-none transition-colors duration-200 placeholder:text-zinc-700"
                     />
                   </div>
                 </div>
