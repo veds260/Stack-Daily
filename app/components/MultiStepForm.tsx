@@ -107,8 +107,12 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     if (step < TOTAL_STEPS) {
       setStep(step + 1);
     } else {
-      // Extract name from X handle for submission
-      const xHandle = formData.xProfile.replace('x.com/', '').replace('@', '');
+      // Extract name from X profile URL
+      let xHandle = formData.xProfile;
+      // Remove protocol and domain
+      xHandle = xHandle.replace(/^https?:\/\//, '').replace(/^(www\.)?(x|twitter)\.com\//, '').replace('@', '');
+      // Remove trailing slashes or query params
+      xHandle = xHandle.split('/')[0].split('?')[0];
       const submissionData = {
         ...formData,
         name: xHandle,
