@@ -335,6 +335,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
+                  {formData.xProfile.trim() && !isValidXProfile(formData.xProfile) && (
+                    <p className="text-red-500 text-sm mt-4">Please enter a valid URL</p>
+                  )}
                 </div>
               )}
 
@@ -505,6 +508,9 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-200 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
+                  {formData.portfolio.trim() && !isValidPortfolio(formData.portfolio) && (
+                    <p className="text-red-500 text-sm mt-4">Please enter a valid URL</p>
+                  )}
                 </div>
               )}
 
