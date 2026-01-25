@@ -44,7 +44,8 @@ export function isValidUrl(str: string): boolean {
   if (!str || str.trim() === '') return false;
   try {
     const url = new URL(str);
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    // Must be http/https and have a proper domain with a dot
+    return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname.includes('.');
   } catch {
     return false;
   }
