@@ -46,22 +46,16 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     }));
   };
 
-  // Helper to check if X profile input is valid (URL or handle)
+  // Helper to check if X profile input is valid URL
   const isValidXProfile = (input: string): boolean => {
     const trimmed = input.trim();
     if (!trimmed) return false;
 
-    // If it looks like a URL, validate it
-    if (trimmed.includes('://') || trimmed.includes('.com') || trimmed.includes('.co')) {
-      let url = trimmed;
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-      }
-      return isValidUrl(url);
+    let url = trimmed;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
     }
-
-    // Otherwise, treat as handle - just needs to have content
-    return trimmed.replace('@', '').length > 0;
+    return isValidUrl(url);
   };
 
   // Helper to check if portfolio URL is valid
