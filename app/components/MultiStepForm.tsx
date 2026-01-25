@@ -46,16 +46,26 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     }));
   };
 
-  // Helper to check if X profile input is valid URL
+  // Helper to check if X profile input is valid X/Twitter URL
   const isValidXProfile = (input: string): boolean => {
     const trimmed = input.trim();
     if (!trimmed) return false;
 
-    let url = trimmed;
+    let url = trimmed.toLowerCase();
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://' + url;
     }
-    return isValidUrl(url);
+
+    // Must be a valid URL and from x.com or twitter.com
+    if (!isValidUrl(url)) return false;
+
+    try {
+      const parsed = new URL(url);
+      const hostname = parsed.hostname.replace('www.', '');
+      return hostname === 'x.com' || hostname === 'twitter.com';
+    } catch {
+      return false;
+    }
   };
 
   // Helper to check if portfolio URL is valid
@@ -340,7 +350,7 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     autoFocus
                   />
                   {formData.xProfile.trim() && !isValidXProfile(formData.xProfile) && (
-                    <p className="text-red-500 text-sm mt-4">Please enter a valid URL</p>
+                    <p className="text-red-500 text-sm mt-4">Please enter a valid X profile link</p>
                   )}
                 </div>
               )}
