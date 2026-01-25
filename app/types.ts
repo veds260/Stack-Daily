@@ -24,12 +24,13 @@ export interface TitleInfo {
 }
 
 export const EXPERTISE_OPTIONS = [
-  'Marketing',
-  'Sales',
-  'Operations',
-  'Product',
-  'Design',
-  'Development',
+  'Social Media & Community',
+  'Project Management',
+  'Sales & BD',
+  'Ghostwriting',
+  'Graphic Design',
+  'Video Editing',
+  'Product & Dev',
 ] as const;
 
 export const EXPERIENCE_OPTIONS = [

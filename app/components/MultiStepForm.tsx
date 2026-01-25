@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { FormData, EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS } from '../types';
+import { FormData, EXPERTISE_OPTIONS, EXPERIENCE_OPTIONS, MONTHLY_RATE_OPTIONS, isValidUrl } from '../types';
 
 interface MultiStepFormProps {
   onComplete: (data: FormData) => void;
@@ -46,21 +46,61 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     }));
   };
 
+  // Helper to check if X profile input is valid (URL or handle)
+  const isValidXProfile = (input: string): boolean => {
+    const trimmed = input.trim();
+    if (!trimmed) return false;
+
+    // If it looks like a URL, validate it
+    if (trimmed.includes('://') || trimmed.includes('.com') || trimmed.includes('.co')) {
+      let url = trimmed;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      return isValidUrl(url);
+    }
+
+    // Otherwise, treat as handle - just needs to have content
+    return trimmed.replace('@', '').length > 0;
+  };
+
+  // Helper to check if portfolio URL is valid
+  const isValidPortfolio = (input: string): boolean => {
+    const trimmed = input.trim();
+    if (!trimmed) return false;
+
+    let url = trimmed;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+    return isValidUrl(url);
+  };
+
   const canProceed = () => {
     switch (step) {
       case 0: return true;
-      case 1: return formData.xProfile.trim().length > 0;
+      case 1: return isValidXProfile(formData.xProfile);
       case 2: return formData.telegram.trim().length > 0;
       case 3: return formData.expertise.length > 0 || otherExpertise.trim().length > 0;
       case 4: return formData.experienceLevel.length > 0 || (formData.experienceLevel === 'other' && otherExperience.trim().length > 0);
       case 5: return formData.monthlyRate.length > 0 || (formData.monthlyRate === 'other' && otherMonthlyRate.trim().length > 0);
-      case 6: return formData.portfolio.trim().length > 0;
+      case 6: return isValidPortfolio(formData.portfolio);
       case 7: return formData.biggestWin.trim().length > 0;
       default: return false;
     }
   };
 
   const handleNext = () => {
+    // Auto-fix X profile URL if entered without protocol
+    if (step === 1 && formData.xProfile.trim() !== '') {
+      let value = formData.xProfile.trim();
+      // If it looks like a URL but missing protocol, add it
+      if ((value.includes('.com') || value.includes('.co')) && !value.startsWith('http://') && !value.startsWith('https://')) {
+        value = 'https://' + value;
+        updateField('xProfile', value);
+      }
+    }
+
     // Auto-fix portfolio URL if entered without protocol
     if (step === 6 && formData.portfolio.trim() !== '') {
       let url = formData.portfolio.trim();
@@ -290,14 +330,14 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
               {step === 1 && (
                 <div className="text-center">
                   <h1 className="text-white text-3xl md:text-4xl font-light tracking-tight mb-12">
-                    What's your X handle?
+                    What's your X profile?
                   </h1>
                   <input
                     type="text"
                     value={formData.xProfile}
                     onChange={e => updateField('xProfile', e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="@handle"
+                    placeholder="x.com/yourhandle"
                     className="w-full bg-transparent border-b border-zinc-800 focus:border-zinc-600 text-white text-xl py-4 outline-none transition-colors duration-300 placeholder:text-zinc-700 text-center font-light"
                     autoFocus
                   />
