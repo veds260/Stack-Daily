@@ -120,14 +120,19 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
           )}
 
           {/* Name */}
-          <h1 className="text-white text-4xl md:text-5xl font-light mb-10 tracking-tight leading-tight bg-gradient-to-br from-white via-white to-zinc-300 bg-clip-text text-transparent">
+          <h1 className="text-white text-4xl md:text-5xl font-light mb-12 tracking-tight leading-tight">
             {name}
           </h1>
 
-          {/* Message */}
-          <p className="text-white text-2xl md:text-3xl font-medium tracking-tight leading-snug">
-            I just joined the inner circle
-          </p>
+          {/* Message - Premium minimalistic style */}
+          <div className="space-y-1">
+            <p className="text-zinc-400 text-sm md:text-base font-light tracking-[0.2em] uppercase">
+              I just joined the
+            </p>
+            <p className="text-white text-xl md:text-2xl font-light tracking-wide">
+              Inner Circle
+            </p>
+          </div>
         </div>
       </motion.div>
 
