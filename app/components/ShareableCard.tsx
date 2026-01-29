@@ -97,14 +97,14 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
         }}
         className="relative w-full bg-zinc-950/50 backdrop-blur-xl border border-zinc-800/50 rounded-3xl p-12 md:p-16 transition-all duration-500 hover:border-zinc-700/50 hover:bg-zinc-900/30"
       >
-        {/* Stack logo top right */}
+        {/* Stack logo top right - bigger */}
         <div className="absolute top-6 right-6">
           <Image
             src="/stack-daily-logo-white.png"
             alt="Stack Daily"
-            width={120}
-            height={36}
-            className="h-8 w-auto opacity-80"
+            width={200}
+            height={60}
+            className="h-12 w-auto opacity-90"
           />
         </div>
 
