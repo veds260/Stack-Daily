@@ -58,7 +58,7 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
 
       // Open Twitter compose with message to attach the image
       setTimeout(() => {
-        const tweetText = encodeURIComponent('I just joined the inner circle 🚀\n\nstackdaily.xyz\n\n(Attach the downloaded image to this post)');
+        const tweetText = encodeURIComponent('I just joined the Inner Circle 🚀\n\nstackdaily.xyz\n\n(Attach the downloaded image to this post)');
         window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank');
       }, 500);
     } catch (error) {
@@ -124,13 +124,13 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
             {name}
           </h1>
 
-          {/* Message - Premium minimalistic style */}
-          <div className="space-y-2 max-w-lg mx-auto">
-            <p className="text-zinc-500 text-xs md:text-sm font-light tracking-[0.25em] uppercase">
+          {/* Message - Clean minimalistic style */}
+          <div className="space-y-3 max-w-lg mx-auto">
+            <p className="text-zinc-500 text-xs md:text-sm font-light tracking-[0.3em] uppercase">
               I just joined the
             </p>
-            <p className="text-white text-xl md:text-2xl font-light tracking-tight leading-tight">
-              Stack Daily Inner Circle
+            <p className="text-white text-2xl md:text-3xl font-light tracking-tight">
+              Inner Circle
             </p>
           </div>
         </div>
