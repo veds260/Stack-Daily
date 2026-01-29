@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { toPng } from 'html-to-image';
 
 interface ShareableCardProps {
@@ -103,11 +102,9 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
       >
         {/* Stack logo top right - 2.5x bigger */}
         <div className="absolute top-6 right-6">
-          <Image
+          <img
             src="/stack-daily-logo-white.png"
             alt="Stack Daily"
-            width={300}
-            height={90}
             className="h-20 w-auto opacity-90"
           />
         </div>
