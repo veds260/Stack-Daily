@@ -125,12 +125,12 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
           </h1>
 
           {/* Message - Premium minimalistic style */}
-          <div className="space-y-2 max-w-md mx-auto">
+          <div className="space-y-2 max-w-lg mx-auto">
             <p className="text-zinc-500 text-xs md:text-sm font-light tracking-[0.25em] uppercase">
               I just joined the
             </p>
-            <p className="text-white text-2xl md:text-3xl font-light tracking-tight leading-tight">
-              Stack Daily<br />Inner Circle
+            <p className="text-white text-xl md:text-2xl font-light tracking-tight leading-tight">
+              Stack Daily Inner Circle
             </p>
           </div>
         </div>
