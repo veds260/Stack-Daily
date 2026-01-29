@@ -88,14 +88,14 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-red-500/5 via-transparent to-red-500/5 pointer-events-none" />
 
-        {/* Stack logo top right - 50% larger, small padding */}
+        {/* Stack logo top right - 50% bigger */}
         <div className="absolute top-5 right-5 z-10">
           <Image
             src="/stack-daily-logo-white.png"
             alt="Stack Daily"
-            width={270}
-            height={81}
-            className="h-16 w-auto opacity-95"
+            width={405}
+            height={122}
+            className="h-24 w-auto opacity-95"
             style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}
           />
         </div>
