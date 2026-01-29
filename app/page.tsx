@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import MultiStepForm from './components/MultiStepForm';
+import ShareableCard from './components/ShareableCard';
 import { FormData } from './types';
 
 const TELEGRAM_LINK = 'https://t.me/+q3abpE3xjGszMGQ1';
@@ -102,6 +103,16 @@ export default function Home() {
                 </svg>
               </a>
             </div>
+          </motion.div>
+
+          {/* Shareable Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="w-full max-w-lg mt-8"
+          >
+            <ShareableCard xProfile={formData.xProfile} name={formData.name} />
           </motion.div>
         </div>
       </div>
