@@ -391,7 +391,14 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
                     {EXPERTISE_OPTIONS.map(skill => (
                       <motion.button
                         key={skill}
+                        type="button"
                         onClick={() => toggleExpertise(skill)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            toggleExpertise(skill);
+                          }
+                        }}
                         whileTap={{ scale: 0.98 }}
                         className={`p-4 rounded-xl text-left text-sm transition-all duration-200 ${
                           formData.expertise.includes(skill)
