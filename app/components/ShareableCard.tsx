@@ -124,40 +124,40 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
             </div>
           )}
 
-          {/* Name */}
-          <h1 className="text-white text-4xl md:text-5xl font-semibold mb-6 tracking-tight">
+          {/* Name - cleaner, lighter typography */}
+          <h1 className="text-white text-3xl md:text-4xl font-light mb-8 tracking-tight">
             {name}
           </h1>
 
-          {/* Message */}
-          <p className="text-zinc-400 text-lg md:text-xl mb-3">
+          {/* Message - minimal styling */}
+          <p className="text-zinc-500 text-base mb-3">
             I just applied for
           </p>
-          <p className="text-white text-2xl md:text-3xl font-semibold tracking-tight">
+          <p className="text-white text-xl md:text-2xl font-medium tracking-tight">
             Stack Daily Inner Circle
           </p>
         </div>
       </motion.div>
 
-      {/* Action buttons outside the card */}
-      <div className="flex gap-3 mt-6">
+      {/* Action buttons outside the card - separated and styled individually */}
+      <div className="flex gap-4 mt-8">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleCopy}
           disabled={isCopied}
-          className="flex-1 px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-zinc-200 transition-colors disabled:bg-green-500 disabled:text-white flex items-center justify-center gap-2"
+          className="px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-zinc-100 transition-colors disabled:bg-green-500 disabled:text-white flex items-center justify-center gap-3"
         >
           {isCopied ? (
             <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Copied!
             </>
           ) : (
             <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
               Copy
@@ -170,16 +170,16 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
           whileTap={{ scale: 0.98 }}
           onClick={handleDownload}
           disabled={isDownloading}
-          className="flex-1 px-6 py-3 bg-zinc-800 text-white rounded-full font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="px-8 py-4 bg-zinc-800 text-white rounded-full font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-3"
         >
           {isDownloading ? (
             <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               Downloading...
             </>
           ) : (
             <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
               Download
@@ -193,16 +193,16 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
           rel="noopener noreferrer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 px-6 py-3 bg-zinc-800 text-white rounded-full font-medium hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2"
+          className="px-8 py-4 bg-zinc-800 text-white rounded-full font-medium hover:bg-zinc-700 transition-colors flex items-center justify-center gap-3"
         >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
           </svg>
           Join Telegram
         </motion.a>
       </div>
 
-      <p className="text-zinc-600 text-sm text-center mt-4">
+      <p className="text-zinc-600 text-sm text-center mt-6">
         Share this on X to show you're part of the movement
       </p>
     </div>
