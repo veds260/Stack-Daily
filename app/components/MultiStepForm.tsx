@@ -62,7 +62,14 @@ export default function MultiStepForm({ onComplete }: MultiStepFormProps) {
     try {
       const parsed = new URL(url);
       const hostname = parsed.hostname.replace('www.', '');
-      return hostname === 'x.com' || hostname === 'twitter.com';
+      const isCorrectDomain = hostname === 'x.com' || hostname === 'twitter.com';
+
+      // Extract username from pathname
+      const pathname = parsed.pathname.replace(/^\//, '').replace(/\/$/, '');
+      const username = pathname.split('/')[0].split('?')[0];
+
+      // Must have both correct domain AND a username
+      return isCorrectDomain && username.length > 0;
     } catch {
       return false;
     }

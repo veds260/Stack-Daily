@@ -8,9 +8,10 @@ import { toPng } from 'html-to-image';
 interface ShareableCardProps {
   xProfile: string;
   name: string;
+  isSuccessScreen: boolean;
 }
 
-export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
+export default function ShareableCard({ xProfile, name, isSuccessScreen }: ShareableCardProps) {
   const [profilePicUrl, setProfilePicUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
@@ -30,7 +31,6 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
         setIsLoading(false);
       } catch (error) {
         console.error('Failed to fetch profile picture:', error);
-        // Use Twitter's default profile picture as fallback
         setProfilePicUrl('https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png');
         setIsLoading(false);
       }
@@ -71,11 +71,9 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
         backgroundColor: '#030303',
       });
 
-      // Convert data URL to blob
       const response = await fetch(dataUrl);
       const blob = await response.blob();
 
-      // Copy to clipboard
       await navigator.clipboard.write([
         new ClipboardItem({ 'image/png': blob })
       ]);
@@ -87,56 +85,41 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
     }
   };
 
-  return (
-    <div className="w-full mt-8">
-      {/* Card Preview */}
-      <div ref={cardRef} className="relative w-full aspect-square max-w-md mx-auto bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 rounded-2xl p-8 border border-zinc-800/50 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-[80px]" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-500/5 rounded-full blur-[60px]" />
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-          {/* Profile Picture */}
-          <div className="mb-6">
-            {isLoading ? (
-              <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse" />
-            ) : (
-              <div className="relative">
-                <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl" />
-                <img
-                  src={profilePicUrl}
-                  alt={name}
-                  className="relative w-24 h-24 rounded-full border-2 border-red-500/30 object-cover"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Text */}
-          <h2 className="text-white text-2xl font-medium mb-2 tracking-tight">
-            {name.split(' ')[0]}
-          </h2>
-          <p className="text-zinc-400 text-base mb-8 max-w-xs leading-relaxed">
-            I just applied to<br />
-            <span className="text-white font-medium">Stack Daily Inner Circle</span>
-          </p>
-
-          {/* Logo */}
-          <div className="mt-auto">
-            <Image
-              src="/stack-daily-logo-white.png"
-              alt="Stack Daily"
-              width={200}
-              height={60}
-              className="h-16 w-auto opacity-80"
+  // Success screen mode - just show profile picture and message
+  if (isSuccessScreen) {
+    return (
+      <>
+        {isLoading ? (
+          <div className="w-24 h-24 bg-zinc-800 rounded-full animate-pulse mx-auto mb-6" />
+        ) : (
+          <div className="relative mb-6 inline-block">
+            <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl" />
+            <img
+              src={profilePicUrl}
+              alt={name}
+              className="relative w-24 h-24 rounded-full border-2 border-red-500/30 object-cover"
             />
           </div>
-        </div>
-      </div>
+        )}
 
+        <h1 className="text-white text-2xl font-medium mb-3">
+          Welcome, {name.split(' ')[0]}
+        </h1>
+        <p className="text-zinc-400 mb-3">
+          I just applied for
+        </p>
+        <p className="text-white text-lg font-medium mb-10">
+          Stack Daily Inner Circle
+        </p>
+      </>
+    );
+  }
+
+  // Shareable card mode - show buttons and downloadable card
+  return (
+    <div className="w-full max-w-lg mt-6">
       {/* Action Buttons */}
-      <div className="flex gap-3 mt-6 max-w-md mx-auto">
+      <div className="flex gap-3 mb-8">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -184,7 +167,55 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
         </motion.button>
       </div>
 
-      <p className="text-zinc-600 text-sm text-center mt-4 max-w-md mx-auto">
+      {/* Downloadable Card Preview */}
+      <div ref={cardRef} className="relative w-full aspect-square bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 rounded-2xl p-8 border border-zinc-800/50 overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-[80px]" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-500/5 rounded-full blur-[60px]" />
+
+        {/* Stack logo top right */}
+        <div className="absolute top-6 right-6 z-20">
+          <Image
+            src="/stack-daily-logo-white.png"
+            alt="Stack Daily"
+            width={120}
+            height={36}
+            className="h-8 w-auto opacity-80"
+          />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+          {/* Profile Picture */}
+          <div className="mb-6">
+            {isLoading ? (
+              <div className="w-28 h-28 bg-zinc-800 rounded-full animate-pulse" />
+            ) : (
+              <div className="relative">
+                <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl" />
+                <img
+                  src={profilePicUrl}
+                  alt={name}
+                  className="relative w-28 h-28 rounded-full border-2 border-red-500/30 object-cover"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Text */}
+          <h2 className="text-white text-3xl font-medium mb-4 tracking-tight">
+            {name}
+          </h2>
+          <p className="text-zinc-400 text-lg mb-2">
+            I just applied for
+          </p>
+          <p className="text-white text-xl font-medium">
+            Stack Daily Inner Circle
+          </p>
+        </div>
+      </div>
+
+      <p className="text-zinc-600 text-sm text-center mt-4">
         Share this on X to show you're part of the movement
       </p>
     </div>

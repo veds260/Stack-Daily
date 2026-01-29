@@ -69,27 +69,23 @@ export default function Home() {
             }}
             className="relative w-full max-w-lg bg-zinc-950/50 backdrop-blur-xl border border-zinc-800/50 rounded-3xl p-10 md:p-12 transition-all duration-500 hover:border-zinc-700/50 hover:bg-zinc-900/30"
           >
-            <div className="text-center">
+            {/* Stack logo in top right */}
+            <div className="absolute top-6 right-6">
               <Image
                 src="/stack-daily-logo-white.png"
                 alt="Stack Daily"
-                width={400}
-                height={120}
-                className="h-40 w-auto mx-auto mb-6"
+                width={120}
+                height={36}
+                className="h-8 w-auto opacity-80"
               />
+            </div>
 
-              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-
-              <h1 className="text-white text-2xl font-medium mb-3">
-                Welcome, {formData.name.split(' ')[0]}
-              </h1>
-              <p className="text-zinc-500 mb-10">
-                Your application has been submitted. We will reach out soon.
-              </p>
+            <div className="text-center">
+              <ShareableCard
+                xProfile={formData.xProfile}
+                name={formData.name}
+                isSuccessScreen={true}
+              />
 
               <a
                 href={TELEGRAM_LINK}
@@ -105,15 +101,12 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Shareable Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-lg mt-8"
-          >
-            <ShareableCard xProfile={formData.xProfile} name={formData.name} />
-          </motion.div>
+          {/* Copy/Download buttons outside the box */}
+          <ShareableCard
+            xProfile={formData.xProfile}
+            name={formData.name}
+            isSuccessScreen={false}
+          />
         </div>
       </div>
     );
