@@ -120,17 +120,17 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
           )}
 
           {/* Name */}
-          <h1 className="text-white text-4xl md:text-5xl font-light mb-12 tracking-tight leading-tight">
+          <h1 className="text-white text-3xl md:text-4xl font-light mb-8 tracking-tight leading-tight">
             {name}
           </h1>
 
           {/* Message - Premium minimalistic style */}
-          <div className="space-y-1">
-            <p className="text-zinc-400 text-sm md:text-base font-light tracking-[0.2em] uppercase">
+          <div className="space-y-2 max-w-md mx-auto">
+            <p className="text-zinc-500 text-xs md:text-sm font-light tracking-[0.25em] uppercase">
               I just joined the
             </p>
-            <p className="text-white text-xl md:text-2xl font-light tracking-wide">
-              Inner Circle
+            <p className="text-white text-2xl md:text-3xl font-light tracking-tight leading-tight">
+              Stack Daily<br />Inner Circle
             </p>
           </div>
         </div>
