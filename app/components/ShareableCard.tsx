@@ -23,13 +23,16 @@ export default function ShareableCard({ xProfile, name }: ShareableCardProps) {
     const fetchProfilePic = async () => {
       try {
         const username = xProfile.replace(/^https?:\/\/(www\.)?(twitter\.com|x\.com)\//, '').replace(/\/$/, '');
-        const picUrl = `https://unavatar.io/twitter/${username}`;
+        const unavatarUrl = `https://unavatar.io/twitter/${username}`;
+
+        // Use proxy to avoid CORS issues with html-to-image
+        const picUrl = `/api/proxy-image?url=${encodeURIComponent(unavatarUrl)}`;
 
         setProfilePicUrl(picUrl);
         setIsLoading(false);
       } catch (error) {
         console.error('Failed to fetch profile picture:', error);
-        setProfilePicUrl('https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png');
+        setProfilePicUrl('/api/proxy-image?url=https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png');
         setIsLoading(false);
       }
     };
